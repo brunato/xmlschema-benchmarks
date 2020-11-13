@@ -1,0 +1,15 @@
+*.pyc
+*.pyo
+*~
+*.o
+*.mod
+*.x
+*.a
+*.inc
+*.so
+*.swp
+*.egg-info
+.idea/
+.project/
+.ipynb_checkpoints/
+__pycache__/
