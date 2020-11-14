@@ -8,6 +8,7 @@
 *.inc
 *.so
 *.swp
+*.zip
 *.egg-info
 .idea/
 .project/

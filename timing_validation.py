@@ -14,12 +14,12 @@ import xmlschema
 
 PROJECT_DIR = os.path.dirname(__file__)
 
-SAML2_XSD_FILE = os.path.join(PROJECT_DIR, 'schemas', 'saml-schema-protocol-2.0.xsd')
-SAML2_METADATA_XSD_FILE = os.path.join(PROJECT_DIR, 'schemas', 'saml-schema-metadata-2.0.xsd')
+SAML2_XSD_FILE = os.path.join(PROJECT_DIR, 'schemas/saml-schema-protocol-2.0.xsd')
+SAML2_METADATA_XSD_FILE = os.path.join(PROJECT_DIR, 'schemas/saml-schema-metadata-2.0.xsd')
 
-REQUEST_XML_FILE = os.path.join(PROJECT_DIR, 'schemas', 'saml-schema-protocol-2.0.xsd')
-RESPONSE_XML_FILE = os.path.join(PROJECT_DIR, 'schemas', 'saml-schema-protocol-2.0.xsd')
-METADATA_XML_FILE = os.path.join(PROJECT_DIR, 'schemas', 'saml-schema-protocol-2.0.xsd')
+REQUEST_XML_FILE = os.path.join(PROJECT_DIR, 'data/authn_request.xml')
+RESPONSE_XML_FILE = os.path.join(PROJECT_DIR, 'data/simple_saml_php.xml')
+METADATA_XML_FILE = os.path.join(PROJECT_DIR, 'data/testshib-providers.xml')
 
 
 def run_timeit(stmt='pass', setup='pass', number=10):
@@ -41,7 +41,11 @@ def xmlschema_validate_request():
 
 
 def xmlschema_validate_response():
-    saml2_schema.validate(RESPONSE_XML_FILE)
+    # data/simple_saml_php.xml has 2 invalid base64 values:
+    #   'LHNK1FJfcOIUuWVKJmGABQ+W98+pQ=='
+    #   'LqkW39SOYbttYxlGhIBw=='
+    # these 2 errors are confirmed by Xerces but lxml doesn't detect them.
+    assert len(list(saml2_schema.iter_errors(RESPONSE_XML_FILE))) == 2
 
 
 def xmlschema_validate_metadata():
