@@ -24,9 +24,9 @@ Results
 
 Performance comparison:
 
-* Schemas build is ~70-80 times faster with lxml, only ~5 times with loading
+* Schemas build is ~60-70 times faster with lxml, only ~3-4 times with loading
   of serialized schemas with pickle;
-* Validation is ~63-77 times faster with lxml, but lxml validates an XML file
+* Validation is ~60 times faster with lxml, but lxml validates an XML file
   that has 2 invalid base64 values;
 * XPath selection is ~20-30 times faster with lxml and is ~60-85 times faster
   with ElementTree

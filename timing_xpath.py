@@ -21,8 +21,13 @@ RESPONSE_XML_FILE = os.path.join(PROJECT_DIR, 'data/simple_saml_php.xml')
 METADATA_XML_FILE = os.path.join(PROJECT_DIR, 'data/testshib-providers.xml')
 
 
-def run_timeit(stmt='pass', setup='pass', number=10):
-    print("{}: {}s".format(stmt, timeit(stmt, setup=setup, number=number)))
+def run_timeit(stmt='pass', setup='pass', number=10, compare=None):
+    seconds = timeit(stmt, setup=setup, number=number)
+    if compare is None:
+        print("{}: {}s".format(stmt, seconds))
+    else:
+        print("{}: {}s ({:g}x)".format(stmt, seconds, seconds / compare))
+    return seconds
 
 
 request_root = ElementTree.parse(REQUEST_XML_FILE).getroot()
@@ -105,14 +110,14 @@ SETUP = 'from __main__ import ' \
         'elementpath_lxml_descendants'
 
 
-run_timeit("elementpath_path_with_predicate()", setup=SETUP, number=NUMBER)
 run_timeit("element_tree_path_with_predicate()", setup=SETUP, number=NUMBER)
-run_timeit("lxml_etree_path_with_predicate()", setup=SETUP, number=NUMBER)
-run_timeit("elementpath_lxml_path_with_predicate()", setup=SETUP, number=NUMBER)
+t1 = run_timeit("lxml_etree_path_with_predicate()", setup=SETUP, number=NUMBER)
+run_timeit("elementpath_path_with_predicate()", setup=SETUP, number=NUMBER, compare=t1)
+run_timeit("elementpath_lxml_path_with_predicate()", setup=SETUP, number=NUMBER, compare=t1)
 
 print()
 
-run_timeit("elementpath_descendants()", setup=SETUP, number=NUMBER)
 run_timeit("element_tree_descendants()", setup=SETUP, number=NUMBER)
-run_timeit("lxml_etree_descendants()", setup=SETUP, number=NUMBER)
-run_timeit("elementpath_lxml_descendants()", setup=SETUP, number=NUMBER)
+t2 = run_timeit("lxml_etree_descendants()", setup=SETUP, number=NUMBER)
+run_timeit("elementpath_descendants()", setup=SETUP, number=NUMBER, compare=t2)
+run_timeit("elementpath_lxml_descendants()", setup=SETUP, number=NUMBER, compare=t2)

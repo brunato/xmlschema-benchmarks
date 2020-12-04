@@ -22,8 +22,13 @@ RESPONSE_XML_FILE = os.path.join(PROJECT_DIR, 'data/simple_saml_php.xml')
 METADATA_XML_FILE = os.path.join(PROJECT_DIR, 'data/testshib-providers.xml')
 
 
-def run_timeit(stmt='pass', setup='pass', number=10):
-    print("{}: {}s".format(stmt, timeit(stmt, setup=setup, number=number)))
+def run_timeit(stmt='pass', setup='pass', number=10, compare=None):
+    seconds = timeit(stmt, setup=setup, number=number)
+    if compare is None:
+        print("{}: {}s".format(stmt, seconds))
+    else:
+        print("{}: {}s ({:g}x)".format(stmt, seconds, seconds / compare))
+    return seconds
 
 
 saml2_schema = xmlschema.XMLSchema10(SAML2_XSD_FILE)
@@ -77,13 +82,16 @@ SETUP = 'from __main__ import ' \
         'lxml_validate_response, ' \
         'lxml_validate_metadata'
 
-
-run_timeit("lxml_validate_request()", setup=SETUP, number=NUMBER)
-run_timeit("lxml_validate_response()", setup=SETUP, number=NUMBER)
-run_timeit("lxml_validate_metadata()", setup=SETUP, number=NUMBER)
+t1 = [run_timeit("lxml_validate_request()", setup=SETUP, number=NUMBER),
+      run_timeit("lxml_validate_response()", setup=SETUP, number=NUMBER),
+      run_timeit("lxml_validate_metadata()", setup=SETUP, number=NUMBER)]
 
 print()
 
-run_timeit("xmlschema_validate_request()", setup=SETUP, number=NUMBER)
-run_timeit("xmlschema_validate_response()", setup=SETUP, number=NUMBER)
-run_timeit("xmlschema_validate_metadata()", setup=SETUP, number=NUMBER)
+t2 = [run_timeit("xmlschema_validate_request()", setup=SETUP, number=NUMBER, compare=t1[0]),
+      run_timeit("xmlschema_validate_response()", setup=SETUP, number=NUMBER, compare=t1[1]),
+      run_timeit("xmlschema_validate_metadata()", setup=SETUP, number=NUMBER, compare=t1[2])]
+
+print()
+
+print('lxml is about {:g} times faster than xmlschema'.format(sum(t2) / sum(t1)))
