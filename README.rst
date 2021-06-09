@@ -16,8 +16,9 @@ Available performance tests:
 
 * *timing_schema_build.py* : performance on building of the SAML2 schemas
 * *timing_validation.py* : performance on validation of SAML2 XML data
+* *timing_decoding.py* : performance on decoding SAML2 XML data
 * *timing_xpath.py* : performance of XPath selection on SAML2 XML data
-
+* *timing_resource.py*: performance on loading SAML2 schema and XML sources
 
 Results
 =======
