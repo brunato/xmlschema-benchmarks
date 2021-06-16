@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 #
 # BDS 3-clause licence, copyright 2020, SISSA
 # @Author: Davide Brunato
