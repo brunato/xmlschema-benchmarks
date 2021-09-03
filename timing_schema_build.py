@@ -98,3 +98,7 @@ t3 = [run_timeit("xmlschema_loads_saml2_schema()",
                  setup=SETUP, number=NUMBER, compare=t1[0]),
       run_timeit("xmlschema_loads_saml2_metadata_schema()",
                  setup=SETUP, number=NUMBER, compare=t1[1])]
+
+print()
+
+print('lxml is about {:g} times faster than xmlschema'.format(sum(t2) / sum(t1)))

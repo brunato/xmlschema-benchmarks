@@ -112,12 +112,16 @@ SETUP = 'from __main__ import ' \
 
 run_timeit("element_tree_path_with_predicate()", setup=SETUP, number=NUMBER)
 t1 = run_timeit("lxml_etree_path_with_predicate()", setup=SETUP, number=NUMBER)
-run_timeit("elementpath_path_with_predicate()", setup=SETUP, number=NUMBER, compare=t1)
+t2 = run_timeit("elementpath_path_with_predicate()", setup=SETUP, number=NUMBER, compare=t1)
 run_timeit("elementpath_lxml_path_with_predicate()", setup=SETUP, number=NUMBER, compare=t1)
 
 print()
 
 run_timeit("element_tree_descendants()", setup=SETUP, number=NUMBER)
-t2 = run_timeit("lxml_etree_descendants()", setup=SETUP, number=NUMBER)
-run_timeit("elementpath_descendants()", setup=SETUP, number=NUMBER, compare=t2)
-run_timeit("elementpath_lxml_descendants()", setup=SETUP, number=NUMBER, compare=t2)
+t3 = run_timeit("lxml_etree_descendants()", setup=SETUP, number=NUMBER)
+t4 = run_timeit("elementpath_descendants()", setup=SETUP, number=NUMBER, compare=t3)
+run_timeit("elementpath_lxml_descendants()", setup=SETUP, number=NUMBER, compare=t3)
+
+print()
+
+print("lxml's xpath is about {:g} times faster than elementpath".format((t2/t1 + t4/t3) / 2.0))

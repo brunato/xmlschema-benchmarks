@@ -25,24 +25,38 @@ Results
 
 Performance comparison:
 
-* Schemas build is ~60-70 times faster with lxml, only ~3-4 times with loading
+* Schemas build is ~75 times faster with lxml, only ~4 times with loading
   of serialized schemas with pickle;
-* Validation is ~60 times faster with lxml, but lxml validates an XML file
+* Validation is ~42 times faster with lxml, but lxml validates an XML file
   that has 2 invalid base64 values;
-* XPath selection is ~20-30 times faster with lxml and is ~60-85 times faster
-  with ElementTree
+* XPath selection is ~19 times faster with lxml (*)
 
 Even lxml is more faster with these types of schemas, xmlschema covers full XSD 1.0
 and XSD 1.1 and has other protection features over malicious constructed XSD/XML
 sources (eg. MAX_XML_DEPTH/MAX_MODEL_DEPTH).
+For XPath lxml has only selectors for XPath 1.0.
 
-For XPath the difference against lxml is reduced, and lxml has only selectors for
-XPath 1.0. The difference against the XPath selectors of the standard library is
+(*) The difference against the XPath selectors of the standard library is
 higher but ElementTree doesn't have a full XPath processor.
 
-Future improvements could be tentatives of using type-hints and optional
-Cythonized modules.
+Benchmarks comparison matrix
+============================
 
++--------------------+------------------------+----------------------+-----------------+
+| lxml VS xmlschema  | timing_schema_build.py | timing_validation.py | timing_xpath.py |
++====================+========================+======================+=================+
+| xmlschema==1.4.1,  | ~78                    | ~57x                 | ~20x            |
+| elementpath==2.0.5 |                        |                      |                 |
++--------------------+------------------------+----------------------+-----------------+
+| xmlschema==1.5.3,  | ~75                    | ~42x                 | ~24x            |
+| elementpath==2.1.4 |                        |                      |                 |
++--------------------+------------------------+----------------------+-----------------+
+| xmlschema==1.6.4,  | ~75                    | ~42x                 | ~23x            |
+| elementpath==2.2.3 |                        |                      |                 |
++--------------------+------------------------+----------------------+-----------------+
+| xmlschema==1.7.1,  | ~75                    | ~42x                 | ~19x            |
+| elementpath==2.3.0 |                        |                      |                 |
++--------------------+------------------------+----------------------+-----------------+
 
 License
 =======
