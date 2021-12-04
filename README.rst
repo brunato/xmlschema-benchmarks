@@ -19,6 +19,7 @@ Available performance tests:
 * *timing_decoding.py* : performance on decoding SAML2 XML data
 * *timing_xpath.py* : performance of XPath selection on SAML2 XML data
 * *timing_resource.py*: performance on loading SAML2 schema and XML sources
+* *timing_etree.py*: performance on loading and iterating XML trees
 
 Results
 =======
