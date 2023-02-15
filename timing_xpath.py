@@ -11,7 +11,7 @@ import os
 from timeit import timeit
 from xml.etree import ElementTree
 import lxml.etree as etree
-from elementpath import select, XPath1Parser
+from elementpath import select, Selector, XPath1Parser
 
 
 PROJECT_DIR = os.path.dirname(__file__)
@@ -48,9 +48,19 @@ XPath1Parser.build()
 
 print("### Performance test of XPath selection over SAML2 XML data ###\n")
 
+predicate_selector = Selector(path1, namespaces, parser=XPath1Parser)
+descendant_selector = Selector('.//*', parser=XPath1Parser)
 
-def elementpath_path_with_predicate():
+
+def select_with_predicate():
     results = select(metadata_root, path1, namespaces, parser=XPath1Parser)
+    assert len(results) == 1
+    assert results[0] is metadata_root[1][1][1][9]
+    assert results[0].get('Algorithm') == value
+
+
+def selector_with_predicate():
+    results = predicate_selector.select(metadata_root)
     assert len(results) == 1
     assert results[0] is metadata_root[1][1][1][9]
     assert results[0].get('Algorithm') == value
@@ -70,15 +80,27 @@ def lxml_etree_path_with_predicate():
     assert results[0].get('Algorithm') == value
 
 
-def elementpath_lxml_path_with_predicate():
+def select_lxml_with_predicate():
     results = select(metadata_lxml_root, path1, namespaces, parser=XPath1Parser)
     assert len(results) == 1
     assert results[0] is metadata_lxml_root[5][2][1][9]
     assert results[0].get('Algorithm') == value
 
 
-def elementpath_descendants():
+def selector_lxml_with_predicate():
+    results = predicate_selector.select(metadata_lxml_root)
+    assert len(results) == 1
+    assert results[0] is metadata_lxml_root[5][2][1][9]
+    assert results[0].get('Algorithm') == value
+
+
+def select_descendants():
     results = select(response_root, './/*', parser=XPath1Parser)
+    assert len(results) == 46
+
+
+def selector_descendants():
+    results = descendant_selector.select(response_root)
     assert len(results) == 46
 
 
@@ -92,35 +114,48 @@ def lxml_etree_descendants():
     assert len(results) == 46
 
 
-def elementpath_lxml_descendants():
+def select_lxml_descendants():
     results = select(response_lxml_root, './/*', parser=XPath1Parser)
+    assert len(results) == 46
+
+
+def selector_lxml_descendants():
+    results = descendant_selector.select(response_lxml_root)
     assert len(results) == 46
 
 
 NUMBER = 300
 
 SETUP = 'from __main__ import ' \
-        'elementpath_path_with_predicate, ' \
+        'select_with_predicate, ' \
+        'selector_with_predicate, ' \
         'element_tree_path_with_predicate, ' \
         'lxml_etree_path_with_predicate, ' \
-        'elementpath_lxml_path_with_predicate, ' \
-        'elementpath_descendants, ' \
+        'select_lxml_with_predicate, ' \
+        'selector_lxml_with_predicate, ' \
+        'select_descendants, ' \
+        'selector_descendants, ' \
         'element_tree_descendants, ' \
         'lxml_etree_descendants, ' \
-        'elementpath_lxml_descendants'
+        'select_lxml_descendants, ' \
+        'selector_lxml_descendants'
 
 
 run_timeit("element_tree_path_with_predicate()", setup=SETUP, number=NUMBER)
 t1 = run_timeit("lxml_etree_path_with_predicate()", setup=SETUP, number=NUMBER)
-t2 = run_timeit("elementpath_path_with_predicate()", setup=SETUP, number=NUMBER, compare=t1)
-run_timeit("elementpath_lxml_path_with_predicate()", setup=SETUP, number=NUMBER, compare=t1)
+t2 = run_timeit("select_with_predicate()", setup=SETUP, number=NUMBER, compare=t1)
+run_timeit("selector_with_predicate()", setup=SETUP, number=NUMBER, compare=t1)
+run_timeit("select_lxml_with_predicate()", setup=SETUP, number=NUMBER, compare=t1)
+run_timeit("selector_lxml_with_predicate()", setup=SETUP, number=NUMBER, compare=t1)
 
 print()
 
 run_timeit("element_tree_descendants()", setup=SETUP, number=NUMBER)
 t3 = run_timeit("lxml_etree_descendants()", setup=SETUP, number=NUMBER)
-t4 = run_timeit("elementpath_descendants()", setup=SETUP, number=NUMBER, compare=t3)
-run_timeit("elementpath_lxml_descendants()", setup=SETUP, number=NUMBER, compare=t3)
+t4 = run_timeit("select_descendants()", setup=SETUP, number=NUMBER, compare=t3)
+run_timeit("selector_descendants()", setup=SETUP, number=NUMBER, compare=t3)
+run_timeit("select_lxml_descendants()", setup=SETUP, number=NUMBER, compare=t3)
+run_timeit("selector_lxml_descendants()", setup=SETUP, number=NUMBER, compare=t3)
 
 print()
 
